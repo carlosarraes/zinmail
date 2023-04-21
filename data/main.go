@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/jhillyerd/enmime"
 )
@@ -69,7 +68,6 @@ func main() {
 			if err != nil {
 				return err
 			}
-			time.Sleep(1 * time.Second)
 			sendToZincSearch(jsonData)
 		}
 		return nil
