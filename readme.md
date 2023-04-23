@@ -1,0 +1,3 @@
+# MiMeMail
+
+Initial docs
