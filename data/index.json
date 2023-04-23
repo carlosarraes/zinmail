@@ -1,0 +1,153 @@
+{
+  "name": "emails",
+  "storage_type": "disk",
+  "shard_num": 3,
+  "mappings": {
+    "properties": {
+      "@timestamp": {
+        "type": "date",
+        "index": true,
+        "store": false,
+        "sortable": true,
+        "aggregatable": true,
+        "highlightable": true
+      },
+      "_id": {
+        "type": "keyword",
+        "index": true,
+        "store": false,
+        "sortable": true,
+        "aggregatable": true,
+        "highlightable": true
+      },
+      "content": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "content_transfer_encoding": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "content_type": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "date": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "from": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "message_id": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "mime_version": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "subject": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "to": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "x_bcc": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "x_cc": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "x_filename": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "x_folder": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "x_from": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "x_origin": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      },
+      "x_to": {
+        "type": "text",
+        "index": true,
+        "store": false,
+        "sortable": false,
+        "aggregatable": false,
+        "highlightable": true
+      }
+    }
+  }
+}
