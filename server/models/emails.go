@@ -1,0 +1,140 @@
+package models
+
+import (
+	"bytes"
+	"encoding/json"
+	"io/ioutil"
+	"log"
+	"net/http"
+)
+
+type EmailSearchResult struct {
+	Took     int  `json:"took"`
+	TimedOut bool `json:"timed_out"`
+	Hits     struct {
+		Total struct {
+			Value int `json:"value"`
+		} `json:"total"`
+		Hits []struct {
+			Index     string  `json:"_index"`
+			Type      string  `json:"_type"`
+			ID        string  `json:"_id"`
+			Score     float64 `json:"_score"`
+			Timestamp string  `json:"@timestamp"`
+			Source    Email   `json:"_source"`
+			Highlight struct {
+				Content []string `json:"content"`
+			} `json:"highlight"`
+		} `json:"hits"`
+	} `json:"hits"`
+}
+
+type Email struct {
+	From      string `json:"from"`
+	To        string `json:"to"`
+	Content   string `json:"content"`
+	Subject   string `json:"subject"`
+	Date      string `json:"date"`
+	Highlight struct {
+		Content []string `json:"content"`
+	} `json:"highlight"`
+}
+
+type ApiResponse struct {
+	Took   int     `json:"took"`
+	Emails []Email `json:"emails"`
+}
+
+var apiEndpoint = "http://localhost:4080/api/emails/_search"
+
+func GetEmails(s string) (ApiResponse, error) {
+	requestBody := map[string]interface{}{
+		"search_type": "matchphrase",
+		"query": map[string]interface{}{
+			"term":  s,
+			"field": "content",
+		},
+		"from":        0,
+		"max_results": 20,
+		"_source":     []string{},
+		"highlight": map[string]interface{}{
+			"pre_tags":  []string{"<strong>"},
+			"post_tags": []string{"</strong>"},
+			"fields": map[string]interface{}{
+				"title": map[string]interface{}{
+					"pre_tags":  []string{},
+					"post_tags": []string{},
+				},
+				"content": map[string]interface{}{
+					"pre_tags":  []string{},
+					"post_tags": []string{},
+				},
+			},
+		},
+	}
+
+	var apiResponse ApiResponse
+
+	jsonData, err := json.Marshal(requestBody)
+	if err != nil {
+		log.Println(err)
+		return apiResponse, err
+	}
+
+	client := &http.Client{}
+	req, err := http.NewRequest("POST", apiEndpoint, bytes.NewBuffer(jsonData))
+	if err != nil {
+		log.Println(err)
+		return apiResponse, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.SetBasicAuth("admin", "password")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println(err)
+		return apiResponse, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println(err)
+		return apiResponse, err
+	}
+
+	log.Printf("Response Body: %+v\n", string(body))
+
+	response := EmailSearchResult{}
+	if err := json.Unmarshal(body, &response); err != nil {
+		log.Println(err)
+		return apiResponse, err
+	}
+
+	apiResponse = ApiResponse{
+		Took:   response.Hits.Total.Value,
+		Emails: convertToEmails(response),
+	}
+
+	return apiResponse, nil
+}
+
+func convertToEmails(response EmailSearchResult) []Email {
+	emails := []Email{}
+
+	for _, hit := range response.Hits.Hits {
+		log.Printf("Hit: %+v\n", hit.Highlight.Content)
+		email := Email{
+			From:      hit.Source.From,
+			To:        hit.Source.To,
+			Subject:   hit.Source.Subject,
+			Content:   hit.Source.Content,
+			Date:      hit.Source.Date,
+			Highlight: hit.Highlight,
+		}
+		emails = append(emails, email)
+	}
+
+	return emails
+}
