@@ -23,6 +23,7 @@ func (a *App) Routes() http.Handler {
 		MaxAge:           300,
 	}))
 
+	r.Mount("/debug", middleware.Profiler())
 	r.Post("/search", a.Search)
 
 	return r

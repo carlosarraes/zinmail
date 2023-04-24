@@ -104,8 +104,6 @@ func GetEmails(s string) (ApiResponse, error) {
 		return apiResponse, err
 	}
 
-	log.Printf("Response Body: %+v\n", string(body))
-
 	response := EmailSearchResult{}
 	if err := json.Unmarshal(body, &response); err != nil {
 		log.Println(err)
@@ -124,7 +122,6 @@ func convertToEmails(response EmailSearchResult) []Email {
 	emails := []Email{}
 
 	for _, hit := range response.Hits.Hits {
-		log.Printf("Hit: %+v\n", hit.Highlight.Content)
 		email := Email{
 			From:      hit.Source.From,
 			To:        hit.Source.To,
