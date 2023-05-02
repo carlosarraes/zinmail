@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
+  lucide-vue-next:
+    specifier: ^0.193.0
+    version: 0.193.0(vue@3.2.47)
   vue:
     specifier: ^3.2.47
     version: 3.2.47
@@ -761,6 +764,14 @@ packages:
     dependencies:
       yallist: 4.0.0
     dev: true
+
+  /lucide-vue-next@0.193.0(vue@3.2.47):
+    resolution: {integrity: sha512-IX8xyCsGAxyqic1wDdiqUHYGzPIPC/aL23FGTStK4wfMiFvQ1dP6HWGNMmIU+VlIHVqRC8LaIYWHbbOHOdwaFg==}
+    peerDependencies:
+      vue: '>=3.0.1'
+    dependencies:
+      vue: 3.2.47
+    dev: false
 
   /magic-string@0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}

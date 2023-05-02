@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "lucide-vue-next": "^0.193.0",
     "vue": "^3.2.47"
   },
   "devDependencies": {
