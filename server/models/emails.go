@@ -30,14 +30,13 @@ type EmailSearchResult struct {
 }
 
 type Email struct {
-	From      string `json:"from"`
-	To        string `json:"to"`
-	Content   string `json:"content"`
-	Subject   string `json:"subject"`
-	Date      string `json:"date"`
-	Highlight struct {
-		Content []string `json:"content"`
-	} `json:"highlight"`
+	Id        string   `json:"id"`
+	From      string   `json:"from"`
+	To        string   `json:"to"`
+	Content   string   `json:"content"`
+	Subject   string   `json:"subject"`
+	Date      string   `json:"date"`
+	Highlight []string `json:"highlight"`
 }
 
 type ApiResponse struct {
@@ -123,12 +122,13 @@ func convertToEmails(response EmailSearchResult) []Email {
 
 	for _, hit := range response.Hits.Hits {
 		email := Email{
+			Id:        hit.ID,
 			From:      hit.Source.From,
 			To:        hit.Source.To,
 			Subject:   hit.Source.Subject,
 			Content:   hit.Source.Content,
 			Date:      hit.Source.Date,
-			Highlight: hit.Highlight,
+			Highlight: hit.Highlight.Content,
 		}
 		emails = append(emails, email)
 	}
