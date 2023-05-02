@@ -1,3 +1,10 @@
+export interface SingleMail {
+  from: string;
+  to: string;
+  subject: string;
+  content: string;
+}
+
 export interface Email {
   id: string;
   from: string;
