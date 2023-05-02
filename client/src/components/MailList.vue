@@ -63,8 +63,8 @@ const toggleMail = (mail?: string) => {
     </div>
   </div>
   <div class="w-full mx-auto table-wrapper">
-    <table class="w-[800px] divide-y divide-gray-200">
-      <thead class="bg-gray-50 min-w-full">
+    <table class="w-[1200px] divide-y divide-gray-200">
+      <thead class="bg-gray-50 min-w-full sticky top-0 z-0 shadow-md">
         <tr>
           <th
             scope="col"
@@ -127,5 +127,6 @@ const toggleMail = (mail?: string) => {
 .table-wrapper {
   max-height: calc(100vh - 4rem);
   overflow-y: scroll;
+  padding-bottom: 2rem;
 }
 </style>
