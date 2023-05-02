@@ -3,6 +3,7 @@ import { ref } from "vue";
 import SearchBar from "./components/SearchBar.vue";
 import type { Email } from "./interfaces/Email";
 import MailList from "./components/MailList.vue";
+import { MailOpen } from "lucide-vue-next";
 
 const mails = ref<Email[]>([]);
 
@@ -21,7 +22,10 @@ const handleSearch = async (searchTerm: string) => {
 </script>
 
 <template>
-  <h1 class="header">Hello</h1>
+  <header class="flex gap-4 py-2">
+    <MailOpen class="text-3xl self-center" />
+    <h1 class="text-3xl">Zin Mail</h1>
+  </header>
   <SearchBar @search="handleSearch" />
   <MailList :mails="mails" />
 </template>
