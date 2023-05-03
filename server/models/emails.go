@@ -54,7 +54,7 @@ func GetEmails(s string) (ApiResponse, error) {
 			"field": "content",
 		},
 		"from":        0,
-		"max_results": 20,
+		"max_results": 200,
 		"_source":     []string{},
 		"highlight": map[string]interface{}{
 			"pre_tags":  []string{"<strong>"},
