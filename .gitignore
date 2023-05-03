@@ -1,1 +1,3 @@
-enron_mail_20110402/
+data/emails/
+.serverless/
+bin/
