@@ -12,8 +12,9 @@ const onSearch = () => {
   <section class="flex justify-end gap-4 p-2">
     <input
       type="text"
-      class="text-black rounded-md p-2 w-5/12"
+      class="text-black rounded-md p-2 w-10/12"
       v-model="searchText"
+      placeholder="Enter your search term..."
       @keyup.enter="onSearch"
     />
     <button
