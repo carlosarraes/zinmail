@@ -44,7 +44,10 @@ type ApiResponse struct {
 	Emails []Email `json:"emails"`
 }
 
-var apiEndpoint = "http://localhost:4080/api/emails/_search"
+var (
+	apiEndpoint = "http://ec2-18-231-3-43.sa-east-1.compute.amazonaws.com:4080/api/emails/_search"
+	httpClient  = &http.Client{}
+)
 
 func GetEmails(s string) (ApiResponse, error) {
 	requestBody := map[string]interface{}{
@@ -80,7 +83,6 @@ func GetEmails(s string) (ApiResponse, error) {
 		return apiResponse, err
 	}
 
-	client := &http.Client{}
 	req, err := http.NewRequest("POST", apiEndpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		log.Println(err)
@@ -90,7 +92,7 @@ func GetEmails(s string) (ApiResponse, error) {
 	req.Header.Set("Content-Type", "application/json")
 	req.SetBasicAuth("admin", "password")
 
-	resp, err := client.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		log.Println(err)
 		return apiResponse, err
@@ -102,6 +104,7 @@ func GetEmails(s string) (ApiResponse, error) {
 		log.Println(err)
 		return apiResponse, err
 	}
+	resp.Body.Close()
 
 	response := EmailSearchResult{}
 	if err := json.Unmarshal(body, &response); err != nil {
