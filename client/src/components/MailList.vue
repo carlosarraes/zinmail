@@ -68,18 +68,18 @@ const toggleMail = (mail?: string) => {
       </thead>
       <tbody class="bg-slate-50 min-w-full divide-y divide-gray-200">
         <tr v-for="mail in mails" :key="mail.id">
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-left text-gray-900 truncate w-48">
+          <td class="px-6 py-4">
+            <div class="text-sm text-left text-gray-900 truncate w-40">
               {{ mail.from }}
             </div>
           </td>
           <td class="px-6 py-4">
-            <div class="text-sm text-left text-gray-900 truncate w-44">
+            <div class="text-sm text-left text-gray-900 truncate w-40">
               {{ mail.to === "" ? "No recipient" : mail.to }}
             </div>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-left text-gray-900 truncate w-48">
+            <div class="text-sm text-left text-gray-900 truncate w-44">
               {{ mail.subject }}
             </div>
           </td>
@@ -106,6 +106,7 @@ const toggleMail = (mail?: string) => {
 .table-wrapper {
   max-height: calc(100vh - 4rem);
   overflow-y: scroll;
+  overflow-x: hidden;
   padding-bottom: 2rem;
 }
 

@@ -15,6 +15,7 @@ defineProps<{
       class="text-2xl text-black cursor-pointer self-center"
       @click="index > 0 ? index-- : index"
       v-show="highlight.length >= 2"
+      :style="{ opacity: index > 0 ? 1 : 0.2 }"
     />
     <div
       class="text-sm text-left text-gray-900 w-96"
@@ -24,6 +25,7 @@ defineProps<{
       class="text-2xl text-black cursor-pointer self-center"
       @click="index < highlight.length - 1 ? index++ : index"
       v-show="highlight.length >= 2"
+      :style="{ opacity: index < highlight.length - 1 ? 1 : 0.2 }"
     />
   </section>
 </template>
