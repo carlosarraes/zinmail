@@ -38,6 +38,7 @@ defineProps<{
             {{ singleMailContent.to }}
           </span>
         </p>
+        <p class="text-black text-sm">Date: {{ singleMailContent.date }}</p>
         <p class="text-black text-sm">
           Subject: {{ singleMailContent.subject }}
         </p>
