@@ -1,28 +1,37 @@
-# MiMeMail
+# Zin Mail
 
-Initial docs
+Zin Mail is a full-stack project built using Vue3 on the frontend, Go on the backend, and the ZincSearch database. It allows users to search through a large dataset of 517k emails, providing an efficient and responsive experience.
+
+Visit the live application here: [Link](http://zinmail.s3-website-sa-east-1.amazonaws.com/)
+
+## Overview
+
+The project took over a week to complete and was a valuable learning experience. It covers various aspects of web development, from frontend and backend to working with databases and containerization.
+
+The entire application is hosted on AWS, including the frontend, backend, database container, and the email dataset.
+
+### Frontend - Vue3
+
+The frontend of Zin Mail is built using Vue3 with the Composition API, offering a more maintainable and scalable codebase. The application is styled with Tailwind CSS and focuses on desktop screen sizes (best viewed at a width of around 1000px). The frontend handles pagination and allows users to view the full email content with a single click on the view icon.
+
+### Backend - Go/Go-chi
+
+The backend is built using Go and the Go-chi library. It serves as a service layer that communicates with the ZincSearch database, retrieves data, filters relevant information, and sends it back to the frontend. A profiler (pprof) is also available to analyze the backend's performance and identify areas for improvement.
+
+### ZincSearch
+
+ZincSearch is an alternative to ElasticSearch, built using Go. The official website can be found here: [ZincSearch](https://zinc.dev/). To ingest the email dataset into ZincSearch, a Go script was created (located in the data folder). After ingesting the data, the backend communicates with ZincSearch through its endpoints to retrieve the necessary data.
 
 ## Optimizations
 
-That was interesting, never thought that checking the validation of JSON would be so "expensive", one of the ways to optimize the code but, wouldnt be safe at all, is if i dont unmarshal and copy it directly to an interface.
+Checking the validation of JSON can be quite expensive in terms of performance. One potential optimization would be to avoid unmarshaling and copying the data directly to an interface. However, this method might not be safe.
 
-Other data that i found
+Here are some performance metrics for searches with a maximum of 200 results, highlighting enabled, and 14.5k "hey" sent to the API:
 
-### Searchs with max results 20, highlight on, 14.5k "hey" to the API
-
-<table>
-<thead>
-<tr>
-<th>Word</th>
-<th>Value (Return)</th>
-<th>Runtime</th>
-</tr>
-</thead>
-<tbody align="center">
-<tr><td>'example'</td><td>11288</td><td>20 ms</td></tr>
-<tr><td>'mutation'</td><td>9</td><td>3 ms</td></tr>
-<tr><td>'mutation, where are you'</td><td>3</td><td>3 ms</td></tr>
-<tr><td>'how are you'</td><td>1818</td><td>250 ms</td></tr>
-<tr><td>'how are'</td><td>3388</td><td>150 ms</td></tr>
-</tbody>
-</table>
+| Word                      | Value (Return) | Runtime |
+| ------------------------- | -------------: | ------: |
+| 'example'                 |         11,288 |   20 ms |
+| 'mutation'                |              9 |    3 ms |
+| 'mutation, where are you' |              3 |    3 ms |
+| 'how are you'             |          1,818 |  250 ms |
+| 'how are'                 |          3,388 |  150 ms |
