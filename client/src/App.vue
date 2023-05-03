@@ -3,25 +3,32 @@ import { ref, computed } from "vue";
 import SearchBar from "./components/SearchBar.vue";
 import HandlePages from "./components/HandlePages.vue";
 import MailList from "./components/MailList.vue";
+import Header from "./components/Header.vue";
+import Spinner from "./components/Spinner.vue";
 import type { Email } from "./interfaces/Email";
-import { MailOpen } from "lucide-vue-next";
 
 const mails = ref<Email[]>([]);
 const pageSize = ref(20);
 const currentPage = ref(1);
 const searched = ref(false);
+const loading = ref(false);
 
 const handleSearch = async (searchTerm: string) => {
-  const response = await fetch("http://localhost:8080/search", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ searchTerm }),
-  });
+  loading.value = true;
+  const response = await fetch(
+    "http://ec2-18-231-3-43.sa-east-1.compute.amazonaws.com:8080/search",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ searchTerm }),
+    }
+  );
 
   const { emails } = await response.json();
   mails.value = emails;
+  loading.value = false;
   searched.value = true;
 };
 
@@ -45,10 +52,7 @@ const prevPage = () => {
 </script>
 
 <template>
-  <header class="flex gap-4 py-2">
-    <MailOpen class="text-3xl self-center" />
-    <h1 class="text-3xl">Zin Mail</h1>
-  </header>
+  <Header />
   <section class="flex w-full items-center justify-evenly">
     <HandlePages
       :currentPage="currentPage"
@@ -61,7 +65,10 @@ const prevPage = () => {
       <SearchBar @search="handleSearch" />
     </div>
   </section>
-  <MailList :mails="paginatedMails" />
+  <div class="flex flex-col justify-center items-center">
+    <MailList :mails="paginatedMails" />
+    <Spinner v-show="loading" class="mt-4" />
+  </div>
 </template>
 
 <style>
