@@ -30,6 +30,7 @@ const handleSearch = async (searchTerm: string) => {
   mails.value = emails;
   loading.value = false;
   searched.value = true;
+  currentPage.value = 1;
 };
 
 const totalPages = computed(() =>
