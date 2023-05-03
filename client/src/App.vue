@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import SearchBar from "./components/SearchBar.vue";
-import type { Email } from "./interfaces/Email";
+import HandlePages from "./components/HandlePages.vue";
 import MailList from "./components/MailList.vue";
-import { MailOpen, ChevronLeft, ChevronRight } from "lucide-vue-next";
+import type { Email } from "./interfaces/Email";
+import { MailOpen } from "lucide-vue-next";
 
 const mails = ref<Email[]>([]);
 const pageSize = ref(20);
@@ -49,34 +50,13 @@ const prevPage = () => {
     <h1 class="text-3xl">Zin Mail</h1>
   </header>
   <section class="flex w-full items-center justify-evenly">
-    <div class="w-1/3 flex justify-center items-center">
-      <ChevronLeft
-        class="text-xl cursor-pointer self-center"
-        :class="{
-          'text-gray-300': currentPage <= 1,
-          'text-white': currentPage > 1,
-        }"
-        @click="prevPage"
-        :style="{ opacity: currentPage > 1 ? 1 : 0.5 }"
-        v-show="searched"
-      />
-      <span
-        class="text-xl text-white cursor-pointer self-center"
-        v-show="searched"
-      >
-        Page {{ currentPage }} of {{ totalPages }}
-      </span>
-      <ChevronRight
-        class="text-xl cursor-pointer self-center"
-        :class="{
-          'text-gray-300': currentPage >= totalPages,
-          'text-white': currentPage < totalPages,
-        }"
-        @click="nextPage"
-        :style="{ opacity: currentPage < totalPages ? 1 : 0.5 }"
-        v-show="searched"
-      />
-    </div>
+    <HandlePages
+      :currentPage="currentPage"
+      :totalPages="totalPages"
+      :searched="searched"
+      :nextPage="nextPage"
+      :prevPage="prevPage"
+    />
     <div class="w-2/3">
       <SearchBar @search="handleSearch" />
     </div>
