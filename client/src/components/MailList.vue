@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { Email, SingleMail } from "../interfaces/Email";
 import Modal from "./Modal.vue";
+import MatchedContent from "./MatchedContent.vue";
+import { Eye } from "lucide-vue-next";
 import { ref } from "vue";
 
 const props = defineProps<{
@@ -11,6 +13,7 @@ const showMail = ref(false);
 const singleMailContent = ref<SingleMail>({
   from: "",
   to: "",
+  date: "",
   subject: "",
   content: "",
 });
@@ -37,55 +40,61 @@ const toggleMail = (mail?: string) => {
       <thead class="bg-gray-50 min-w-full sticky top-0 z-0 shadow-md">
         <tr>
           <th
-            scope="col"
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
             From
           </th>
           <th
-            scope="col"
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
             To
           </th>
           <th
-            scope="col"
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
             Subject
           </th>
           <th
-            scope="col"
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
             Matched Content
           </th>
+          <th
+            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            View
+          </th>
         </tr>
       </thead>
-      <tbody
-        class="bg-slate-50 min-w-full divide-y divide-gray-200 cursor-pointer"
-      >
-        <tr v-for="mail in mails" :key="mail.id" @click="toggleMail(mail.id)">
+      <tbody class="bg-slate-50 min-w-full divide-y divide-gray-200">
+        <tr v-for="mail in mails" :key="mail.id">
           <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-left text-gray-900 truncate w-52">
+            <div class="text-sm text-left text-gray-900 truncate w-48">
               {{ mail.from }}
             </div>
           </td>
           <td class="px-6 py-4">
-            <div class="text-sm text-left text-gray-900 truncate w-52">
-              {{ mail.to }}
+            <div class="text-sm text-left text-gray-900 truncate w-44">
+              {{ mail.to === "" ? "No recipient" : mail.to }}
             </div>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-left text-gray-900 truncate w-52">
+            <div class="text-sm text-left text-gray-900 truncate w-48">
               {{ mail.subject }}
             </div>
           </td>
+          <td class="px-6 py-4 cursor-text">
+            <MatchedContent :highlight="mail.highlight" />
+          </td>
           <td class="px-6 py-4">
             <div
-              class="text-sm text-left text-gray-900 w-96"
-              v-html="mail.highlight[0]"
-            ></div>
+              class="flex justify-center items-center text-sm text-left text-gray-900 w-8"
+            >
+              <Eye
+                class="text-2xl text-black cursor-pointer self-center hover:scale-110 duration-150"
+                @click="toggleMail(mail.id)"
+              />
+            </div>
           </td>
         </tr>
       </tbody>
