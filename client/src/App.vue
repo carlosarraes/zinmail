@@ -13,24 +13,40 @@ const currentPage = ref(1);
 const searched = ref(false);
 const loading = ref(false);
 
+let controller: AbortController | null = null;
+
 const handleSearch = async (searchTerm: string) => {
+  if (controller) controller.abort();
+
   loading.value = true;
-  const response = await fetch(
-    "http://ec2-18-231-3-43.sa-east-1.compute.amazonaws.com:8080/search",
-    {
+
+  try {
+    controller = new AbortController();
+
+    const response = await fetch("http://localhost:8080/search", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ searchTerm }),
-    }
-  );
+      signal: controller.signal,
+    });
 
-  const { emails } = await response.json();
-  mails.value = emails;
-  loading.value = false;
-  searched.value = true;
-  currentPage.value = 1;
+    if (!response.ok) throw new Error("Something went wrong");
+
+    const { emails } = await response.json();
+    mails.value = emails;
+    searched.value = true;
+    currentPage.value = 1;
+  } catch (e) {
+    console.error(e);
+    if (e instanceof Error) {
+      if (e.name === "AbortError") return;
+    }
+  } finally {
+    loading.value = false;
+    controller = null;
+  }
 };
 
 const totalPages = computed(() =>
