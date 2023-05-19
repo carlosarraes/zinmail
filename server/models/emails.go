@@ -45,7 +45,7 @@ type ApiResponse struct {
 }
 
 var (
-	apiEndpoint = "http://localhost:4080/api/emails/_search"
+	apiEndpoint = "http://ec2-18-228-104-151.sa-east-1.compute.amazonaws.com:4080/api/emails/_search"
 	httpClient  = &http.Client{}
 )
 

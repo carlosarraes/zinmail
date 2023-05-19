@@ -23,7 +23,7 @@ const handleSearch = async (searchTerm: string) => {
   try {
     controller = new AbortController();
 
-    const response = await fetch("http://localhost:8080/search", {
+    const response = await fetch("http://ec2-18-228-104-151.sa-east-1.compute.amazonaws.com:8080/search", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
