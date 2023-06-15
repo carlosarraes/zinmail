@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 
 	"github.com/jhillyerd/enmime"
 )
@@ -39,6 +40,7 @@ type BulkData struct {
 
 func main() {
 	log.Println("Start indexing...")
+	startTime := time.Now()
 
 	var records []EmailData
 	var m sync.Mutex
@@ -72,7 +74,8 @@ func main() {
 
 	sendBulkToZincSearch(records)
 
-	log.Println("Finished indexing")
+	duration := time.Since(startTime)
+	log.Printf("Finished indexing. Time taken: %.2f seconds", duration.Seconds())
 }
 
 func processFile(path string) (EmailData, error) {
