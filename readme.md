@@ -2,13 +2,15 @@
 
 Zin Mail is a full-stack project built using Vue3 on the frontend, Go on the backend, and the ZincSearch database. It allows users to search through a large dataset of 517k emails, providing an efficient and responsive experience.
 
-Visit the live application here: [Link](http://zinmail.s3-website-sa-east-1.amazonaws.com/)
-
 ## Overview
 
 The project took over a week to complete and was a valuable learning experience. It covers various aspects of web development, from frontend and backend to working with databases and containerization.
 
-The entire application is hosted on AWS, including the frontend, backend, database container, and the email dataset.
+~~The entire application is hosted on AWS, including the frontend, backend, database container, and the email dataset.~~
+
+Unfortunately, AWS isn't free, so I had to take the project down. You can follow the installation instructions or watch a video demonstration of the app below.
+
+## How to Install
 
 ### Frontend - Vue3
 
