@@ -1,3 +1,4 @@
-data/emails/
-.serverless/
-bin/
+data/enron_mail_20110402
+data/enron_mail_20110402.tgz
+server/bin
+data/_metadata.bolt
