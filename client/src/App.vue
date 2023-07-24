@@ -12,7 +12,7 @@ const pageSize = ref(20);
 const currentPage = ref(1);
 const searched = ref(false);
 const loading = ref(false);
-const url = "http://localhost:8080";
+const url = "http://127.0.0.1:8080";
 
 let controller: AbortController | null = null;
 

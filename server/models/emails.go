@@ -45,7 +45,7 @@ type ApiResponse struct {
 }
 
 var (
-	apiEndpoint = "http://localhost:4080/api/emails/_search"
+	apiEndpoint = "http://zincsearch:4080/api/emails/_search"
 	httpClient  = &http.Client{}
 )
 

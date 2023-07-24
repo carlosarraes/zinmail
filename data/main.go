@@ -46,7 +46,7 @@ func main() {
 	var m sync.Mutex
 	var wg sync.WaitGroup
 
-	err := filepath.Walk("./enron_mail_20110402/maildir/", func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk("./maildir/", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
