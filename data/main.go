@@ -7,9 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
-	"sync"
-	"time"
 
 	"github.com/jhillyerd/enmime"
 )
@@ -38,44 +35,75 @@ type BulkData struct {
 	Records []EmailData `json:"records"`
 }
 
+type PropertyDetail struct {
+	Type          string `json:"type"`
+	Index         bool   `json:"index"`
+	Store         bool   `json:"store"`
+	Sortable      bool   `json:"sortable"`
+	Aggregatable  bool   `json:"aggregatable"`
+	Highlightable bool   `json:"highlightable"`
+}
+
+type Mapping struct {
+	Properties map[string]PropertyDetail `json:"properties"`
+}
+
+type IndexerData struct {
+	Name         string  `json:"name"`
+	StorageType  string  `json:"storage_type"`
+	ShardNum     int     `json:"shard_num"`
+	MappingField Mapping `json:"mappings"`
+}
+
 func main() {
-	log.Println("Start indexing...")
-	startTime := time.Now()
-
-	var records []EmailData
-	var m sync.Mutex
-	var wg sync.WaitGroup
-
-	err := filepath.Walk("./maildir/", func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !info.IsDir() {
-			wg.Add(1)
-			go func(p string) {
-				defer wg.Done()
-				emailData, err := processFile(p)
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				m.Lock()
-				records = append(records, emailData)
-				m.Unlock()
-			}(path)
-		}
-		return nil
-	})
+	log.Println("Starting indexer...")
+	indexerData, err := createIndexerFromJsonFile("./index.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	wg.Wait()
+	sent := createIndexOnZincSearch(indexerData)
+	if sent != "ok" {
+		log.Fatal("Failed to send indexer to ZincSearch")
+	}
 
-	sendBulkToZincSearch(records)
-
-	duration := time.Since(startTime)
-	log.Printf("Finished indexing. Time taken: %.2f seconds", duration.Seconds())
+	// log.Println("Start indexing...")
+	// startTime := time.Now()
+	//
+	// var records []EmailData
+	// var m sync.Mutex
+	// var wg sync.WaitGroup
+	//
+	// err := filepath.Walk("./maildir/", func(path string, info os.FileInfo, err error) error {
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// 	if !info.IsDir() {
+	// 		wg.Add(1)
+	// 		go func(p string) {
+	// 			defer wg.Done()
+	// 			emailData, err := processFile(p)
+	// 			if err != nil {
+	// 				log.Println(err)
+	// 				return
+	// 			}
+	// 			m.Lock()
+	// 			records = append(records, emailData)
+	// 			m.Unlock()
+	// 		}(path)
+	// 	}
+	// 	return nil
+	// })
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	//
+	// wg.Wait()
+	//
+	// sendBulkToZincSearch(records)
+	//
+	// duration := time.Since(startTime)
+	// log.Printf("Finished indexing. Time taken: %.2f seconds", duration.Seconds())
 }
 
 func processFile(path string) (EmailData, error) {
@@ -140,4 +168,42 @@ func sendBulkToZincSearch(records []EmailData) {
 		log.Println(err)
 		return
 	}
+}
+
+func createIndexerFromJsonFile(filepath string) (IndexerData, error) {
+	var indexerData IndexerData
+
+	file, err := os.Open(filepath)
+	if err != nil {
+		return indexerData, err
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&indexerData)
+	if err != nil {
+		return indexerData, err
+	}
+
+	return indexerData, nil
+}
+
+func createIndexOnZincSearch(indexerData IndexerData) string {
+	jsonData, err := json.Marshal(indexerData)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	resp, err := http.Post("http://yourhost.com/create_indexer", "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusCreated {
+		log.Fatalf("failed to create indexer, status code: %d", resp.StatusCode)
+	}
+	log.Println("Indexer created successfully")
+
+	return "ok"
 }
