@@ -12,6 +12,14 @@ Unfortunately, AWS isn't free, so I had to take the project down. You can follow
 
 ## How to Install
 
+chmod a+rwx ./data
+
+docker compose up -d ou docker-compose up -d
+
+http://www.cs.cmu.edu/~enron/
+
+Direct link http://www.cs.cmu.edu/~enron/enron_mail_20150507.tar.gz
+
 ### Frontend - Vue3
 
 The frontend of Zin Mail is built using Vue3 with the Composition API, offering a more maintainable and scalable codebase. The application is styled with Tailwind CSS and focuses on desktop screen sizes (best viewed at a width of around 1000px). The frontend handles pagination and allows users to view the full email content with a single click on the view icon.
