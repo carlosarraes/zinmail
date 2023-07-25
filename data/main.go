@@ -3,10 +3,14 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
+	"sync"
+	"time"
 
 	"github.com/jhillyerd/enmime"
 )
@@ -56,54 +60,61 @@ type IndexerData struct {
 }
 
 func main() {
-	log.Println("Starting indexer...")
+	log.Println("Starting indexer!")
 	indexerData, err := createIndexerFromJsonFile("./index.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	sent := createIndexOnZincSearch(indexerData)
-	if sent != "ok" {
-		log.Fatal("Failed to send indexer to ZincSearch")
+	log.Println("Deleting index if exists...")
+	deleted := deleteIndexOnZincSearch("emails")
+	if deleted != nil {
+		log.Println("Index doesn't exist. Creating...")
 	}
 
-	// log.Println("Start indexing...")
-	// startTime := time.Now()
-	//
-	// var records []EmailData
-	// var m sync.Mutex
-	// var wg sync.WaitGroup
-	//
-	// err := filepath.Walk("./maildir/", func(path string, info os.FileInfo, err error) error {
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	if !info.IsDir() {
-	// 		wg.Add(1)
-	// 		go func(p string) {
-	// 			defer wg.Done()
-	// 			emailData, err := processFile(p)
-	// 			if err != nil {
-	// 				log.Println(err)
-	// 				return
-	// 			}
-	// 			m.Lock()
-	// 			records = append(records, emailData)
-	// 			m.Unlock()
-	// 		}(path)
-	// 	}
-	// 	return nil
-	// })
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	//
-	// wg.Wait()
-	//
-	// sendBulkToZincSearch(records)
-	//
-	// duration := time.Since(startTime)
-	// log.Printf("Finished indexing. Time taken: %.2f seconds", duration.Seconds())
+	sent := createIndexOnZincSearch(indexerData)
+	if sent != nil {
+		log.Fatal(sent)
+	}
+
+	log.Println("Index created successfully.")
+	log.Println("Start indexing, this might take a few minutes...")
+	startTime := time.Now()
+
+	var records []EmailData
+	var m sync.Mutex
+	var wg sync.WaitGroup
+
+	err = filepath.Walk("./maildir/", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			wg.Add(1)
+			go func(p string) {
+				defer wg.Done()
+				emailData, err := processFile(p)
+				if err != nil {
+					log.Println(err)
+					return
+				}
+				m.Lock()
+				records = append(records, emailData)
+				m.Unlock()
+			}(path)
+		}
+		return nil
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	wg.Wait()
+
+	sendBulkToZincSearch(records)
+
+	duration := time.Since(startTime)
+	log.Printf("Finished indexing. Time taken: %.2f seconds", duration.Seconds())
 }
 
 func processFile(path string) (EmailData, error) {
@@ -188,22 +199,53 @@ func createIndexerFromJsonFile(filepath string) (IndexerData, error) {
 	return indexerData, nil
 }
 
-func createIndexOnZincSearch(indexerData IndexerData) string {
+func createIndexOnZincSearch(indexerData IndexerData) error {
 	jsonData, err := json.Marshal(indexerData)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	resp, err := http.Post("http://yourhost.com/create_indexer", "application/json", bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", "http://localhost:4080/api/index", bytes.NewBuffer(jsonData))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.SetBasicAuth("admin", "password")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusCreated {
+	if resp.StatusCode != http.StatusOK {
 		log.Fatalf("failed to create indexer, status code: %d", resp.StatusCode)
 	}
-	log.Println("Indexer created successfully")
 
-	return "ok"
+	return nil
+}
+
+func deleteIndexOnZincSearch(indexName string) error {
+	req, err := http.NewRequest("DELETE", "http://localhost:4080/api/index/"+indexName, nil)
+	if err != nil {
+		return err
+	}
+
+	req.SetBasicAuth("admin", "password")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("failed to delete indexer, status code: %d", resp.StatusCode)
+	}
+
+	log.Println("Index deleted successfully")
+	return nil
 }
