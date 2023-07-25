@@ -28,6 +28,8 @@ After the downloading and unpacking processes are complete, you can start the in
 
 The frontend can be viewed at http://localhost:5173.
 
+## Stacks
+
 ### Frontend - Vue3
 
 The frontend of Zin Mail is built using Vue3 with the Composition API, offering a more maintainable and scalable codebase. The application is styled with Tailwind CSS and focuses on desktop screen sizes (best viewed at a width of around 1000px). The frontend handles pagination and allows users to view the full email content with a single click on the view icon.
