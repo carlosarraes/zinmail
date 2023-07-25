@@ -12,19 +12,19 @@ Unfortunately, AWS isn't free, so I had to take the project down. You can follow
 
 ## How to Install
 
-1) Clone this repository using the command `git clone git@github.com:carlosarraes/zinmail.git`.
-2) Navigate into the cloned directory using `cd zinmail`.
-3) Grant the necessary permissions to the data folder with `chmod a+rwx ./data`, as per the instructions in the Zinc Search documentation. This can be found in the Docker section [here](https://zincsearch-docs.zinc.dev/installation/).
-4) Return to the parent directory `using cd ..` and initiate the project using `docker compose up -d` or `docker-compose up -d`.
+1. Clone this repository using the command `git clone git@github.com:carlosarraes/zinmail.git`.
+2. Navigate into the cloned directory using `cd zinmail`.
+3. Grant the necessary permissions to the data folder with `chmod a+rwx ./data`, as per the instructions in the Zinc Search documentation. This can be found in the Docker section [here](https://zincsearch-docs.zinc.dev/installation/).
+4. Start the project using `docker compose up -d` or `docker-compose up -d`.
 
 At this point, the project is up and running. However, the database is empty, so we need to populate it. Here's how:
-    
-- Navigate back to the data directory in the zinmail folder.
-- Now, you have two options for downloading and unpacking the email data:
-  - Manually download the emails from the Enron Corpus directly via this link. Unpack this file into the zinmail/data folder (you should see a new maildir folder. If not, rename the unpacked folder to maildir/).
-  - Or, use the provided scripts to automate the downloading process. You can grant permission to the script using `chmod +x download_unpack.sh` (bash/zsh) or `chmod +x download_unpack.fish` (fish). These scripts will download and unpack the emails for you.
 
-After the downloading and unpacking processes are complete, you can start the indexer with ./indexer or go run . from the zinmail directory. Please note that this process is quite resource-intensive and may utilize the full processing power of your machine for approximately 2 minutes. It's advisable to avoid using your computer during this time until the indexing process is complete.
+- Navigate back to the data directory in the zinmail folder with `cd data`.
+- Now, you have two options for downloading and unpacking the email data:
+  - Manually download the emails from the [Enron Corpus](http://www.cs.cmu.edu/~enron/) directly via this [link](http://www.cs.cmu.edu/~enron/enron_mail_20150507.tar.gz) or from [Google Drive](https://drive.google.com/file/d/1lgiFvrjkNqDJ0BOuQlNaEEvJaOZ1X-0r/view?usp=sharing). Unpack this file into the zinmail/data folder (you should see a new maildir folder. If not, rename the unpacked folder to maildir/).
+  - Or, use the provided scripts to automate the downloading process. You can grant permission to the script using `chmod +x download_unpack.sh` (bash/zsh) or `chmod +x download_unpack.fish` (fish). These scripts will download and unpack the emails for you. Remember that after the chmod, you need to run the script with `./download_unpack.sh` or `./download_unpack.fish`.
+
+After the downloading and unpacking processes are complete, you can start the indexer with `./indexer` or `go run .` from the zinmail directory. Please note that this process is quite resource-intensive and may utilize the full processing power of your machine for approximately 2 minutes. It's advisable to avoid using your computer during this time until the indexing process is complete.
 
 The frontend can be viewed at http://localhost:5173.
 
