@@ -19,7 +19,7 @@ Unfortunately, AWS isn't free, so I had to take the project down. You can follow
 
 At this point, the project is up and running. However, the database is empty, so we need to populate it. Here's how:
 
-- Navigate back to the data directory in the zinmail folder with `cd data`.
+- Navigate into to the data directory in the zinmail folder with `cd data`.
 - Now, you have two options for downloading and unpacking the email data:
   - Manually download the emails from the [Enron Corpus](http://www.cs.cmu.edu/~enron/) directly via this [link](http://www.cs.cmu.edu/~enron/enron_mail_20150507.tar.gz) or from [Google Drive](https://drive.google.com/file/d/1lgiFvrjkNqDJ0BOuQlNaEEvJaOZ1X-0r/view?usp=sharing). Unpack this file into the zinmail/data folder (you should see a new maildir folder. If not, rename the unpacked folder to maildir/).
   - Or, use the provided scripts to automate the downloading process. You can grant permission to the script using `chmod +x download_unpack.sh` (bash/zsh) or `chmod +x download_unpack.fish` (fish). These scripts will download and unpack the emails for you. Remember that after the chmod, you need to run the script with `./download_unpack.sh` or `./download_unpack.fish`.
